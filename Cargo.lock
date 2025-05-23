@@ -344,6 +344,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "defmt-rtt"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c6eca0aae8aa2cf8333200ecbd236274697bc0a394765c858b3d9372eb1abcfa"
+dependencies = [
+ "critical-section",
+ "defmt 0.3.100",
+]
+
+[[package]]
 name = "displaydoc"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -502,7 +512,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdc6457c0eb62c71aac4bc17216026d8410337c4126773b9c5daba343f17964f"
 dependencies = [
  "atomic-polyfill",
- "defmt 0.3.100",
  "hash32",
  "rustc_version 0.4.1",
  "serde",
@@ -640,6 +649,15 @@ checksum = "3acae9609540aa318d1bc588455225fb2085b9ed0c4f6bd0d9d5bcd86f1a0344"
 dependencies = [
  "icu_normalizer",
  "icu_properties",
+]
+
+[[package]]
+name = "ism330dhcx"
+version = "0.5.1"
+source = "git+https://github.com/gauteh/ism330dhcx?branch=gyro-accel-parse-range#27c2bb6ab331370af78385bf3efcd18060b7a03f"
+dependencies = [
+ "defmt 0.3.100",
+ "embedded-hal",
 ]
 
 [[package]]
@@ -1077,11 +1095,15 @@ dependencies = [
  "cmsis_dsp",
  "cortex-m",
  "cortex-m-rt",
+ "defmt 0.3.100",
+ "defmt-rtt",
  "embedded-hal",
  "git-version",
  "heapless",
+ "ism330dhcx",
  "static_cell",
  "ufmt",
+ "ufmt_float",
 ]
 
 [[package]]
@@ -1267,6 +1289,16 @@ name = "ufmt-write"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e87a2ed6b42ec5e28cc3b94c09982969e9227600b2e3dcbc1db927a84c06bd69"
+
+[[package]]
+name = "ufmt_float"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a59f843b330b7315292f64f281ae53495687709b10782cbdfb9f309caea33ab6"
+dependencies = [
+ "micromath",
+ "ufmt",
+]
 
 [[package]]
 name = "unicode-ident"

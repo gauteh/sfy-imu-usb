@@ -13,29 +13,23 @@ else
     ELF:= target/thumbv7em-none-eabihf/debug/$(VARIANT)
 endif
 
-docker-build:
-	docker build -t sfy ..
-
-docker-run:
-	docker run -it --rm --name sr -v $(shell pwd)/:/ext-gps-mod sfy
-
 bump-jlink:
-	-python3 ../tools/bump-jlink
+	-python3 ../sfy-code/tools/bump-jlink
 
 build:
-	cd $(VARIANT) && cargo build $(CARGO_FLAGS)
+	cargo build $(CARGO_FLAGS)
 
 bin: build
 	arm-none-eabi-objcopy -S -O binary $(ELF) target/$(VARIANT).bin
 
 flash: bin
-	python3 ../tools/svl/svl.py -f target/$(VARIANT).bin $(USB) -v
+	python3 ../sfy-code/tools/svl/svl.py -f target/$(VARIANT).bin $(USB) -v
 
 jlink-flash: bin bump-jlink
 	sh jlink-flash.sh target/$(VARIANT).bin
 
 deploy: bin
-	python3 ../tools/svl/svl.py -f target/$(VARIANT).bin $(USB) -v
+	python3 ../sfy-code/tools/svl/svl.py -f target/$(VARIANT).bin $(USB) -v
 
 com:
 	picocom -e c -b 115200 $(USB)
