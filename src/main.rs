@@ -241,6 +241,7 @@ fn main() -> ! {
                 reset();
             }
         }
+        serial.flush();
         led.toggle().unwrap();
     }
 }
