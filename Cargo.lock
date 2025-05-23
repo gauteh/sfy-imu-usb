@@ -44,7 +44,7 @@ dependencies = [
  "nb 1.1.0",
  "paste",
  "rtcc",
- "ufmt",
+ "ufmt 0.1.2",
 ]
 
 [[package]]
@@ -689,6 +689,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "libm"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9fbbcab51052fe104eb5e5d351cf728d30a5be1fe14d9be8a3b097481fb97de"
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.4.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1102,8 +1108,8 @@ dependencies = [
  "heapless",
  "ism330dhcx",
  "static_cell",
- "ufmt",
- "ufmt_float",
+ "ufloat",
+ "ufmt 0.2.0",
 ]
 
 [[package]]
@@ -1262,13 +1268,33 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1dccffe3ce07af9386bfd29e80c0ab1a8205a2fc34e4bcd40364df902cfa8f3f"
 
 [[package]]
+name = "ufloat"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6256a15cc9842407941570b555af1f2a18da7429a592aabbd0ef857cd794d5d0"
+dependencies = [
+ "libm",
+ "ufmt 0.2.0",
+]
+
+[[package]]
 name = "ufmt"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "31d3c0c63312dfc9d8e5c71114d617018a19f6058674003c0da29ee8d8036cdd"
 dependencies = [
  "proc-macro-hack",
- "ufmt-macros",
+ "ufmt-macros 0.2.0",
+ "ufmt-write",
+]
+
+[[package]]
+name = "ufmt"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1a64846ec02b57e9108d6469d98d1648782ad6bb150a95a9baac26900bbeab9d"
+dependencies = [
+ "ufmt-macros 0.3.0",
  "ufmt-write",
 ]
 
@@ -1285,20 +1311,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "ufmt-macros"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d337d3be617449165cb4633c8dece429afd83f84051024079f97ad32a9663716"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
 name = "ufmt-write"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e87a2ed6b42ec5e28cc3b94c09982969e9227600b2e3dcbc1db927a84c06bd69"
-
-[[package]]
-name = "ufmt_float"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a59f843b330b7315292f64f281ae53495687709b10782cbdfb9f309caea33ab6"
-dependencies = [
- "micromath",
- "ufmt",
-]
 
 [[package]]
 name = "unicode-ident"

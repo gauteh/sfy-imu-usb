@@ -28,7 +28,8 @@ use embedded_hal::blocking::{
 use ism330dhcx::{ctrl1xl, ctrl2g, fifo, fifoctrl, Ism330Dhcx};
 
 use ufmt::{uwrite, uwriteln};
-use ufmt_float::{uFmt_f32, uFmt_f64};
+// use ufmt_float::{uFmt_f32, uFmt_f64};
+use ufloat::Uf64;
 
 use hal::{i2c, pac::interrupt};
 
@@ -226,12 +227,12 @@ fn main() -> ! {
                     uwriteln!(
                         &mut serial,
                         "A,{},{},{},G,{},{},{}",
-                        uFmt_f64::Five(a_g[0]),
-                        uFmt_f64::Five(a_g[1]),
-                        uFmt_f64::Five(a_g[2]),
-                        uFmt_f64::Five(g_dps[0]),
-                        uFmt_f64::Five(g_dps[1]),
-                        uFmt_f64::Five(g_dps[2])
+                        Uf64(a_g[0], 9),
+                        Uf64(a_g[1], 9),
+                        Uf64(a_g[2], 9),
+                        Uf64(g_dps[0], 9),
+                        Uf64(g_dps[1], 9),
+                        Uf64(g_dps[2], 9)
                     );
                 }
             }
