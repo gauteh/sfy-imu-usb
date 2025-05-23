@@ -1,19 +1,16 @@
 #![no_std]
 #![no_main]
 
+// just because deps use defmt (i think)
 use defmt_rtt as _;
-
-defmt::timestamp!("{=i32}", {0});
+defmt::timestamp!("{=i32}", { 0 });
 
 // we use this for defs of sinf etc.
 extern crate cmsis_dsp;
 
 use ambiq_hal::{self as hal, prelude::*};
-use chrono::NaiveDate;
-use core::cell::RefCell;
-use core::fmt::{Debug, Write as _};
+use core::fmt::Debug;
 use core::panic::PanicInfo;
-use core::sync::atomic::{AtomicI32, Ordering};
 #[allow(unused_imports)]
 use cortex_m::{
     asm,
@@ -22,16 +19,12 @@ use cortex_m::{
 use cortex_m_rt::{entry, exception, ExceptionFrame};
 use embedded_hal::blocking::{
     delay::DelayMs,
-    i2c::{Read, Write, WriteRead},
+    i2c::{Write, WriteRead},
 };
-
+use hal::i2c;
 use ism330dhcx::{ctrl1xl, ctrl2g, fifo, fifoctrl, Ism330Dhcx};
-
-use ufmt::{uwrite, uwriteln};
-// use ufmt_float::{uFmt_f32, uFmt_f64};
 use ufloat::Uf64;
-
-use hal::{i2c, pac::interrupt};
+use ufmt::uwriteln;
 
 #[derive(Debug)]
 pub enum ImuError<E: Debug> {
@@ -161,18 +154,6 @@ fn main() -> ! {
 
     let mut i2c3 = i2c::I2c::new(dp.IOM3, pins.d6, pins.d7, i2c::Freq::F400kHz);
 
-    // Set up RTC
-    let mut rtc = hal::rtc::Rtc::new(dp.RTC, &mut dp.CLKGEN);
-    rtc.set(
-        &NaiveDate::from_ymd_opt(2020, 1, 1)
-            .unwrap()
-            .and_hms_opt(0, 0, 0)
-            .unwrap(),
-    ); // Now timestamps will be positive.
-    rtc.enable();
-    rtc.set_alarm_repeat(hal::rtc::AlarmRepeat::DeciSecond);
-    rtc.enable_alarm();
-
     let mut led = pins.d19.into_push_pull_output();
 
     uwriteln!(&mut serial, "C,blinking to indicate start-up..");
@@ -182,7 +163,7 @@ fn main() -> ! {
         &mut serial,
         "C,giving sub-systems a couple of seconds to start up.."
     );
-    delay.delay_ms(5_000u32);
+    delay.delay_ms(2_000u32);
 
     led.set_low().unwrap();
 
@@ -190,24 +171,6 @@ fn main() -> ! {
     let mut imu = Ism330Dhcx::new_with_address(&mut i2c3, 0x6a).unwrap();
     boot_imu(&mut i2c3, &mut imu).unwrap();
     disable_fifo(&mut i2c3, &mut imu).unwrap();
-
-    // let mut waves = Waves::new(i2c3).unwrap();
-    // waves
-    //     .take_buf(
-    //         now.map(|t| t.and_utc().timestamp_millis()).unwrap_or(0),
-    //         position_time,
-    //         lon,
-    //         lat,
-    //     )
-    //     .unwrap(); // set timestamp.
-
-    // info!("Enable IMU.");
-    // waves.enable_fifo(&mut delay).unwrap();
-
-    // uwriteln!(&mut serial, "C,enabling interrupts..");
-    // unsafe {
-    //     cortex_m::interrupt::enable();
-    // }
 
     uwriteln!(&mut serial, "C,enable imu + fifo..");
     enable_fifo(&mut i2c3, &mut imu, &mut delay).unwrap();
@@ -480,22 +443,6 @@ fn reset() -> ! {
     cortex_m::peripheral::SCB::sys_reset()
 }
 
-// #[cfg(not(feature = "host-tests"))]
-// #[allow(non_snake_case)]
-// #[interrupt]
-// fn RTC() {
-//     // FIFO size of IMU is 512 samples (uncompressed), sample rate at IMU is 208 Hz. So we
-//     // need to empty FIFO at atleast (208 / 512) Hz = 0.406 Hz or every 2.46 s.
-
-//     // Clear RTC interrupt
-//     unsafe {
-//         (*(hal::pac::RTC::ptr()))
-//             .intclr
-//             .write(|w| w.alm().set_bit());
-//     }
-
-// }
-
 #[allow(non_snake_case)]
 #[exception]
 unsafe fn HardFault(ef: &ExceptionFrame) -> ! {
@@ -505,6 +452,6 @@ unsafe fn HardFault(ef: &ExceptionFrame) -> ! {
 #[cfg(feature = "deploy")]
 #[inline(never)]
 #[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
+fn panic(_info: &PanicInfo) -> ! {
     cortex_m::peripheral::SCB::sys_reset();
 }
