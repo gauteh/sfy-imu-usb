@@ -3,7 +3,7 @@
 Acceleration: units G
 Gyro: units dps
 Precision: 9 digits
-Frequency: 833 Hz
+Frequency: 208 Hz
 Range: 2G, 150 dps
 
 Baud rate: 1_000_000
